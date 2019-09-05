@@ -31,7 +31,7 @@ class LRUCache:
   def __getitem__(self, key):
     return self.get(key)
 
-  @timing_decorator
+#   @timing_decorator
   def get(self, key):
     item = self.memcache.get(key)
     if item != None:
@@ -40,7 +40,6 @@ class LRUCache:
     else:
       return None
 
-  @timing_decorator
   def put(self, key, value):
     item = CacheItem(key, value, datetime.now())
     self.onNewHead(item)
@@ -49,7 +48,6 @@ class LRUCache:
     if (len(self.memcache) > self.maxSize):
       self.remove(self.tail.key)
 
-  @timing_decorator
   def onNewHead(self, item):
     # remove from chain
     if self.tail == item:
@@ -66,7 +64,6 @@ class LRUCache:
     if self.tail == None:
       self.tail = item
 
-  @timing_decorator
   def remove(self, key):
     item = self.memcache.get(key)
     if item != None:
@@ -76,7 +73,6 @@ class LRUCache:
     else:
       return None
 
-  @timing_decorator    
   def onRemove(self, item):
     self.removeFromChain(item)
 
@@ -86,7 +82,6 @@ class LRUCache:
     if item == self.tail:
       self.tail = item.prevItem
 
-  @timing_decorator
   def removeFromChain(self, item):
     if item.prevItem != None:
       item.prevItem.nextItem = item.nextItem

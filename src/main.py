@@ -45,13 +45,3 @@ cache.get(1)
 
 cache.put(4, "v4")
 print (cache)
-
-#method_list = [func for func in dir(LRUCache) if callable(getattr(LRUCache, func))]
-method_list = [dir(LRUCache)]
-def new_get(*args, **kwargs):
-  print ("new_get: "+str(args))
-
-cache.__dict__['get'] = MethodType(new_get, cache)
-cache.get(1)
-
-print (method_list)
