@@ -1,13 +1,15 @@
 import time
 from types import MethodType
+import logging
+logger = logging.getLogger(__name__)
 
 def timing_decorator(func):
     def inner(*args, **kwargs):
-        print ("Entered: "+func.__name__)
+        logger.debug("Entered: "+func.__name__)
         startTime = time.time()
         res = func(*args, **kwargs)
         d = (time.time() - startTime)*1000
-        print ("Finished %s in %f ms"%(func.__name__, d))
+        logger.debug("Finished %s in %f ms"%(func.__name__, d))
         return res
   
     return inner

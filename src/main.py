@@ -2,6 +2,11 @@ import itertools
 import functools
 from lru_cache import LRUCache
 from types import MethodType
+import logging
+
+logger = logging.getLogger()
+logging.basicConfig(level=logging.DEBUG)
+
 
 """dic = {}
 t1 = ("sergey", "mineyev")
