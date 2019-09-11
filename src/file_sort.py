@@ -1,5 +1,6 @@
 
 INT_SIZE = 4
+MAX_TMP_FILES=2
 
 def writeInt(f, v):
     return f.write(int(v).to_bytes(INT_SIZE, 'big', signed=True))
@@ -44,15 +45,59 @@ def readDataItem(f) -> DataItem:
         return DataItem(key, val)
     else:
         return None
+    
 
-def sortFile(filename: str):
+def sortFile(filename: str, data_item_compare_function):
+    global MAX_TMP_FILES
+    
+    tmp_filenames = []
     with open(filename, 'rb') as f:
+        data_item_1 = readDataItem(f)
+        
         while True:
-            data_item = readDataItem(f)
-            if data_item :
-                print(data_item)
-            else:
+            if not data_item_1 :
                 break;
+            tmp_filename = "{0}.{1}.tmp".format(filename, len(tmp_filenames))
+            tmp_filenames.append(tmp_filename)
+            with open(tmp_filename, "wb+") as tmp_f:
+                writeDataItem(tmp_f, data_item_1)
+                while True:
+                    data_item_2 = readDataItem(f)
+                    if not data_item_2 :
+                        break;
+                    if data_item_compare_function(data_item_1, data_item_2) > 0:
+                        break
+                    writeDataItem(tmp_f, data_item_2)
+            data_item_1 = data_item_2
+        
+        res_filename = "{0}.res".format(filename)  
+        with open(res_filename, "wb+") as res_file:
+            while True:
+                tmp_files = [None] * len(tmp_filenames)
+                curr_datas = [None] * len(tmp_filenames)
+                try:
+                    for i, tmp_filename in enumerate(tmp_filenames):
+                        tmp_files[i] = open(tmp_filename, "rb")
+                        curr_datas[i] = readDataItem(tmp_files[i])
+                        
+                    while True:
+                        min_idx = -1
+                        for i, data_item in enumerate(curr_datas):
+                            if not data_item:
+                                continue
+                            if min_idx == -1 or data_item_compare_function(curr_datas[min_idx], data_item) > 0:
+                                min_idx = i
+                            
+                        if min_idx == -1: # we processed all tmp file, exit
+                            break                     
+                            
+                        writeDataItem(res_file, curr_datas[min_idx])
+                        curr_datas[min_idx] = readDataItem(tmp_files[min_idx])
+                finally:
+                    for tmp_file in tmp_files:
+                        if tmp_file:
+                            tmp_file.close()
+            
             
             
 

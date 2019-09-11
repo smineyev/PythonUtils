@@ -2,13 +2,10 @@ import unittest
 import os
 from random import shuffle
 from random import randint
-from file_sort import INT_SIZE
-from file_sort import readInt
-from file_sort import writeInt
-from file_sort import sortFile
+from file_sort import INT_SIZE, readInt, writeInt, sortFile, readDataItem
 
 class FileSortTest (unittest.TestCase):
-    test_filename = "/Users/smineyev/Downloads/index.dat"
+    test_filename = "/Users/smineyev/Downloads/files/index.dat"
     
     def setUp(self):
         global INT_SIZE
@@ -68,4 +65,26 @@ class FileSortTest (unittest.TestCase):
         str(os.remove(self.test_filename))
 
     def testFileSort(self):
-        sortFile(self.test_filename)
+        sortFile(self.test_filename, 
+                 lambda data_item_1, data_item_2: data_item_1.getKey() - data_item_2.getKey())
+        
+        with open(self.test_filename+".res") as f:
+            prev_data_item = None
+            while True:
+                data_item = readDataItem(f)
+                if not data_item:
+                    break
+                data_items.append(data_item)
+                
+                if prev_data_item:
+                    assertTrue(prev_data_item.getKey() <= data_item.getKey(), 
+                               "Not ordered keys: %d, %d"%(prev_data_item.getKey(), data_item.getKey()))
+                val_first_int = readInt(data_item.getVal()[:4])
+                print ("%d: %d", data_item.getKey(), val_first_int)
+                assertEquals(data_item.getKey(), val_first_int, "Key (%d) does not correspond to value(%d)"%(data_item.getKey(), val_first_int))
+                
+                prev_data_item = data_item
+                
+        
+                
+                
