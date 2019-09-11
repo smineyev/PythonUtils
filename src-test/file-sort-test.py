@@ -5,6 +5,7 @@ from random import randint
 from file_sort import INT_SIZE
 from file_sort import readInt
 from file_sort import writeInt
+from file_sort import sortFile
 
 class FileSortTest (unittest.TestCase):
     test_filename = "/Users/smineyev/Downloads/index.dat"
@@ -28,43 +29,43 @@ class FileSortTest (unittest.TestCase):
                     writeInt(f, int(v))
                 
 
-    def testFile(self):
-        global INT_SIZE
-        
-        print ("test array from file:")
-        keys = list()
-        vals = list()
-        with open(self.test_filename, 'rb') as f:
-            while True:
-                bytes = f.read(INT_SIZE)
-                if bytes:
-                    key = readInt(bytes)
-                    keys.append(key)
-                    bytes = f.read(INT_SIZE)
-                    if not bytes:
-                        raise IOError("Unexpected EoF")
-                    val_size = int(readInt(bytes) / INT_SIZE)
-                    val = [None] * val_size
-                    for i in range(val_size):
-                        bytes = f.read(INT_SIZE)
-                        if not bytes:
-                            raise IOError("Unexpected EoF")
-                        val[i] = readInt(bytes)
-                        
-                    vals.append(val)
-                else:
-                    break
-                
-                
-        print ("size: %d"%len(keys))
-        for i in range(len(keys)):
-            print(keys[i], end=' :')
-            for v in vals[i]:
-                print(v, end=' ')
-            print()
+#     def testFile(self):
+#         global INT_SIZE
+#         
+#         print ("test array from file:")
+#         keys = list()
+#         vals = list()
+#         with open(self.test_filename, 'rb') as f:
+#             while True:
+#                 bytes = f.read(INT_SIZE)
+#                 if bytes:
+#                     key = readInt(bytes)
+#                     keys.append(key)
+#                     bytes = f.read(INT_SIZE)
+#                     if not bytes:
+#                         raise IOError("Unexpected EoF")
+#                     val_size = int(readInt(bytes) / INT_SIZE)
+#                     val = [None] * val_size
+#                     for i in range(val_size):
+#                         bytes = f.read(INT_SIZE)
+#                         if not bytes:
+#                             raise IOError("Unexpected EoF")
+#                         val[i] = readInt(bytes)
+#                         
+#                     vals.append(val)
+#                 else:
+#                     break
+#                 
+#                 
+#         print ("size: %d"%len(keys))
+#         for i in range(len(keys)):
+#             print(keys[i], end=' :')
+#             for v in vals[i]:
+#                 print(v, end=' ')
+#             print()
             
     def tearDown(self):
         str(os.remove(self.test_filename))
 
     def testFileSort(self):
-        pass
+        sortFile(self.test_filename)
