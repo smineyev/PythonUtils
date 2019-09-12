@@ -19,6 +19,7 @@ class FileSortTest (unittest.TestCase):
         with open(self.test_filename, 'w+b') as f:
             for i in range(len(keys)):
                 key = int(keys[i])
+                print(key)
                 val = vals[i]
                 writeInt(f, key)
                 writeInt(f, len(val)*INT_SIZE)
@@ -68,20 +69,21 @@ class FileSortTest (unittest.TestCase):
         sortFile(self.test_filename, 
                  lambda data_item_1, data_item_2: data_item_1.getKey() - data_item_2.getKey())
         
-        with open(self.test_filename+".res") as f:
+        with open(self.test_filename+".res", "rb") as f:
             prev_data_item = None
             while True:
                 data_item = readDataItem(f)
+                print(data_item)
                 if not data_item:
                     break
-                data_items.append(data_item)
                 
                 if prev_data_item:
-                    assertTrue(prev_data_item.getKey() <= data_item.getKey(), 
+                    self.assertTrue(prev_data_item.getKey() <= data_item.getKey(), 
                                "Not ordered keys: %d, %d"%(prev_data_item.getKey(), data_item.getKey()))
+                    
                 val_first_int = readInt(data_item.getVal()[:4])
-                print ("%d: %d", data_item.getKey(), val_first_int)
-                assertEquals(data_item.getKey(), val_first_int, "Key (%d) does not correspond to value(%d)"%(data_item.getKey(), val_first_int))
+                self.assertEqual(data_item.getKey(), val_first_int, 
+                            "Key ({0}) does not correspond to value({1})".format(data_item.getKey(), val_first_int))
                 
                 prev_data_item = data_item
                 
