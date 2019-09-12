@@ -66,10 +66,10 @@ class FileSortTest (unittest.TestCase):
         str(os.remove(self.test_filename))
 
     def testFileSort(self):
-        sortFile(self.test_filename, 
+        res_filename = sortFile(self.test_filename, 
                  lambda data_item_1, data_item_2: data_item_1.getKey() - data_item_2.getKey())
         
-        with open(self.test_filename+".res", "rb") as f:
+        with open(res_filename, "rb") as f:
             prev_data_item = None
             while True:
                 data_item = readDataItem(f)
